@@ -61,7 +61,7 @@ TO DrawPolygonRing :PolyNum :EdgeNum :RingDistance :FillColor
         rt 360/:PolyNum
         fd :RingDistance
         DrawPolygonAt xcor ycor :EdgeNum 30 :FillColor
-	]
+   ]
 END
 
 
@@ -74,21 +74,21 @@ make "RingDistance 18
 
 ; Main loop for generating animation frames
 for [ Frame 1 1 ] [
-	clean
+   clean
 
     ; Main loop to find primes
-	for [ CurrNum 3 13 ] [
-	  if equal? (IsPrime :CurrNum) 1
-	  [  
-	   make "FillColor array 3
+   for [ CurrNum 3 13 ] [
+     if equal? (IsPrime :CurrNum) 1
+     [  
+      make "FillColor array 3
        setitem 1 :FillColor modulo :CurrNum*12 256
        setitem 2 :FillColor modulo :CurrNum*15 256
        setitem 3 :FillColor modulo :CurrNum*18 256
-	   DrawPolygonRing :CurrNum :CurrNum :RingDistance :FillColor
+      DrawPolygonRing :CurrNum :CurrNum :RingDistance :FillColor
        make "RingDistance :RingDistance+:CurrNum*12.5
-	  ]
-	]
+     ]
+   ]
 
-	;rt 2
-	;GIFSAVE WORD :Frame ".gif
+   ;rt 2
+   ;GIFSAVE WORD :Frame ".gif
 ]
