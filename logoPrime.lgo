@@ -69,7 +69,7 @@ TO DrawPolygonAt :X :Y :EdgeNum :EdgeSize :FillColor
     seth :SaveHeading
 END
 
-TO DrawPolygonRing :PolyNum :EdgeNum :RingDistance :FillColor
+TO DrawPolygonRing :PolyNum :EdgeNum :RingDistance :FillColor :EdgeSize
     pu
     show :PolyNum
     repeat :PolyNum [ 
@@ -77,7 +77,7 @@ TO DrawPolygonRing :PolyNum :EdgeNum :RingDistance :FillColor
         setxy 0 0
         rt 360/:PolyNum
         fd :RingDistance
-        DrawPolygonAt xcor ycor :EdgeNum 30 :FillColor
+        DrawPolygonAt xcor ycor :EdgeNum :EdgeSize :FillColor
    ]
 END
 
@@ -101,7 +101,7 @@ for [ Frame 1 1 ] [
        setitem 1 :FillColor modulo :CurrNum*12 256
        setitem 2 :FillColor modulo :CurrNum*15 256
        setitem 3 :FillColor modulo :CurrNum*18 256
-       DrawPolygonRing :CurrNum :CurrNum :RingDistance :FillColor
+       DrawPolygonRing :CurrNum :CurrNum :RingDistance :FillColor 30
        make "RingDistance :RingDistance+:CurrNum*12.5
      ]
    ]
