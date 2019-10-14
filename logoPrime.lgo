@@ -17,6 +17,8 @@ END
 
 ; Draw the specified n-sided polygon at given point with given fill color
 TO DrawPolygonAt :X :Y :EdgeNum :EdgeSize :FillColor
+
+    ; Save position and heading
     make "SaveX xcor
     make "SaveY ycor
     make "SaveHeading heading
@@ -29,26 +31,41 @@ TO DrawPolygonAt :X :Y :EdgeNum :EdgeSize :FillColor
     home
 
     repeat :EdgeNum [
+        ; Go to center of polygon
         setxy :X :Y
-        fd :r
-        make "PrevX xcor
-        make "PrevY ycor
-        setxy :X :Y
-        rt 360/:EdgeNum
+
+        ; Forward to next vertex
         fd :r
 
+        ; Save current vertex as previous one
+        make "PrevX xcor
+        make "PrevY ycor
+
+        ; Go back to the center
+        setxy :X :Y
+
+        ; Rotate 360/n degrees where n is number of sides
+        rt 360/:EdgeNum
+
+        ; Forward to next vertex
+        fd :r
+
+        ; Now Draw the line from last vertex to the previous one
         pd
         setxy :PrevX :PrevY
         pu
     ]
 
-    setxy :SaveX :SaveY
-
+    ; At this point we have drawn an empty (no fill) polygon
+    ; Go to the center of the polygon one last time, to fill it with the required fill color
+    setxy :X :Y
     pd
      SETFLOODCOLOR arraytolist :FillColor
      FILL
     pu
 
+    ; Restore position and heading
+    setxy :SaveX :SaveY
     seth :SaveHeading
 END
 
