@@ -80,11 +80,11 @@ for [ Frame 1 1 ] [
    for [ CurrNum 3 13 ] [
      if equal? (IsPrime :CurrNum) 1
      [  
-      make "FillColor array 3
+       make "FillColor array 3
        setitem 1 :FillColor modulo :CurrNum*12 256
        setitem 2 :FillColor modulo :CurrNum*15 256
        setitem 3 :FillColor modulo :CurrNum*18 256
-      DrawPolygonRing :CurrNum :CurrNum :RingDistance :FillColor
+       DrawPolygonRing :CurrNum :CurrNum :RingDistance :FillColor
        make "RingDistance :RingDistance+:CurrNum*12.5
      ]
    ]
