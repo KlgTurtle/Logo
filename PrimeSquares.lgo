@@ -1,0 +1,101 @@
+TO DrawTriangle :Prime :Scale 
+    show :Prime
+   ;
+   ;make "FillColor ((modulo ((5)+:Prime) 16)) 
+    setxy 0 0
+    pu
+   ;show :Scale
+    fd :Scale
+    localmake "prevpointx xcor
+    localmake "prevpointy ycor
+    make "MyColor array 3
+
+
+      setitem 1 :MyColor modulo :Prime*2   256
+      setitem 2 :MyColor modulo :Prime*4  256
+      setitem 3 :MyColor modulo :Prime*5 256
+      show :MyColor
+    repeat :Prime    [ 
+      setxy 0 0
+      rt 360/:Prime
+      fd :Scale
+      localmake "nprevpointx xcor
+      localmake "nprevpointy ycor
+      ;wait 20
+      
+     ;localmake "MidPointX (:prevpointx+xcor)/2
+     ;localmake "MidPointY (:prevpointy+ycor)/2
+     localmake "VecAlongX (xcor-:prevpointx)
+     localmake "VecAlongY (ycor-:prevpointy)
+     ;localmake "ThirdPointX :MidPointX-:VecAlongY
+     ;localmake "ThirdPointY :MidPointY+:VecAlongX
+     localmake "FourthPointX xcor-:VecAlongY
+     localmake "FourthPointY ycor+:VecAlongX
+     localmake "ThirdPointX :prevpointx-:VecAlongY
+     localmake "ThirdPointY :prevpointy+:VecAlongX
+     
+     make "NextScale :ThirdPointX*:ThirdPointX + :ThirdPointY*:ThirdPointY
+     make "NextScale (sqrt :NextScale)
+    ; show :NextScale
+     pd
+    ; wait 20
+      ;filled  "#ff0000
+      SETPENCOLOR  0
+      ;SETFLOODCOLOR item 1 ["red "green "blue]
+     
+      SETFLOODCOLOR arraytolist :MyColor
+     ; SETFLOODCOLOR  :FillColor
+     setxy :prevpointx :prevpointy ;wait 20
+     setxy :ThirdPointX :ThirdPointY ;wait 20
+     setxy :FourthPointX :FourthPointY ;wait 20
+     setxy :nprevpointx :nprevpointy ;wait 20
+      pu
+     ;setxy (:prevpointx+:ThirdPointX+:nprevpointx)/3 (:prevpointy+:ThirdPointY+:nprevpointy)/3 ;wait 20
+     setxy (:prevpointx+:ThirdPointX+:FourthPointX+:nprevpointx)/4 (:prevpointy+:ThirdPointY+:FourthPointY+:nprevpointy)/4 ;wait 20
+     fill 
+     
+      ;wait 20
+      make "prevpointx :nprevpointx
+      make "prevpointy :nprevpointy
+     ]
+   
+     OUTPUT :NextScale ;+0.05
+END
+
+
+ht
+cleartext
+clearscreen
+setsc "black
+
+for [ mm 1 1 ] [
+   clean
+   ;show heading
+   ;wait 30
+   make "CurrScale 1
+   make "NewScale 1
+   for [ a 3 150 ] [
+   
+     make "prime 1
+     make "sqrtA sqrt :a
+     ;show :sqrtA
+     for [b 2 :sqrtA]
+     [ 
+      if (modulo :a :b) = 0 
+      [ 
+        make "prime 0 
+      ]
+     ]
+     if :prime = 1 
+     [
+     show :a 
+     ;show :CurrScale
+      
+      make "NewScale DrawTriangle :a :CurrScale 
+      ;show :NewScale
+      make "CurrScale :NewScale
+     ]
+   ]
+   rt 2
+   GIFSAVE WORD :mm ".gif
+]
