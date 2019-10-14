@@ -1,0 +1,94 @@
+; Simple primality test
+TO IsPrime :Num
+    make "sqrtNum sqrt :Num
+    make "Divisor 2  
+    make "bPrime 1 
+
+    while [and (:Divisor <= :sqrtNum) (:bPrime = 1)] [    
+        if (modulo :Num :Divisor) = 0 
+        [ 
+            make "bPrime 0 
+        ]
+        make "Divisor :Divisor+1
+    ]
+
+    OUTPUT :bPrime
+END
+
+; Draw the specified n-sided polygon at given point with given fill color
+TO DrawPolygonAt :X :Y :EdgeNum :EdgeSize :FillColor
+    make "SaveX xcor
+    make "SaveY ycor
+    make "SaveHeading heading
+
+    ; Math magic :) Calculate the Polygon radius from the required Edge size.
+    make "r  :EdgeSize/(2*sin(180/:EdgeNum))
+
+    pu
+
+    home
+
+    repeat :EdgeNum [
+        setxy :X :Y
+        fd :r
+        make "PrevX xcor
+        make "PrevY ycor
+        setxy :X :Y
+        rt 360/:EdgeNum
+        fd :r
+
+        pd
+        setxy :PrevX :PrevY
+        pu
+    ]
+
+    setxy :SaveX :SaveY
+
+    pd
+     SETFLOODCOLOR arraytolist :FillColor
+     FILL
+    pu
+
+    seth :SaveHeading
+END
+
+TO DrawPolygonRing :PolyNum :EdgeNum :RingDistance :FillColor
+    pu
+    show :PolyNum
+    repeat :PolyNum [ 
+        show :PolyNum
+        setxy 0 0
+        rt 360/:PolyNum
+        fd :RingDistance
+        DrawPolygonAt xcor ycor :EdgeNum 30 :FillColor
+	]
+END
+
+
+ht
+cleartext
+clearscreen
+setsc "white
+
+make "RingDistance 18
+
+; Main loop for generating animation frames
+for [ Frame 1 1 ] [
+	clean
+
+    ; Main loop to find primes
+	for [ CurrNum 3 13 ] [
+	  if equal? (IsPrime :CurrNum) 1
+	  [  
+	   make "FillColor array 3
+       setitem 1 :FillColor modulo :CurrNum*12 256
+       setitem 2 :FillColor modulo :CurrNum*15 256
+       setitem 3 :FillColor modulo :CurrNum*18 256
+	   DrawPolygonRing :CurrNum :CurrNum :RingDistance :FillColor
+       make "RingDistance :RingDistance+:CurrNum*12.5
+	  ]
+	]
+
+	;rt 2
+	;GIFSAVE WORD :Frame ".gif
+]
