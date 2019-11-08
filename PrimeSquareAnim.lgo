@@ -1,0 +1,98 @@
+TO DrawTriangle :Prime :Scale :Color
+    show :Prime
+
+    setxy 0 0
+    pu
+    fd :Scale
+    localmake "prevpointx xcor
+    localmake "prevpointy ycor
+    
+    repeat :Prime    [ 
+      setxy 0 0
+      rt 360/:Prime
+      fd :Scale
+      localmake "nprevpointx xcor
+      localmake "nprevpointy ycor
+      ;wait 20
+      
+     
+     localmake "VecAlongX (xcor-:prevpointx)
+     localmake "VecAlongY (ycor-:prevpointy)
+     localmake "FourthPointX xcor-:VecAlongY
+     localmake "FourthPointY ycor+:VecAlongX
+     localmake "ThirdPointX :prevpointx-:VecAlongY
+     localmake "ThirdPointY :prevpointy+:VecAlongX
+     
+     make "NextScale :ThirdPointX*:ThirdPointX + :ThirdPointY*:ThirdPointY
+     make "NextScale (sqrt :NextScale)
+    
+     pd
+   
+      SETPENCOLOR  0
+      
+      
+  
+     setxy :prevpointx :prevpointy ;wait 20
+     setxy :ThirdPointX :ThirdPointY ;wait 20
+     setxy :FourthPointX :FourthPointY ;wait 20
+     setxy :nprevpointx :nprevpointy ;wait 20
+      pu
+    ;ifelse :Prime > 20 [SETFLOODCOLOR arraytolist :Color] [SETFLOODCOLOR 0]
+	SETFLOODCOLOR arraytolist :Color
+     setxy (:prevpointx+:ThirdPointX+:FourthPointX+:nprevpointx)/4 (:prevpointy+:ThirdPointY+:FourthPointY+:nprevpointy)/4 ;wait 20
+     fill 
+     
+     
+      make "prevpointx :nprevpointx
+      make "prevpointy :nprevpointy
+     ]
+   
+     OUTPUT :NextScale ;+0.05
+END
+
+
+ht
+cleartext
+clearscreen
+setsc [5 5 5]
+make "MyColor array 3
+
+
+make "frames 360    
+
+for [ mm 0 :frames-1 ] [
+   clean
+   ;show heading
+   ;wait 30
+   make "CurrScale 1
+   make "NewScale 1
+   for [ a 3 150 ] [
+   
+     make "prime 1
+     make "sqrtA sqrt :a
+     for [b 2 :sqrtA]
+     [ 
+      if (modulo :a :b) = 0 
+      [ 
+        make "prime 0 
+      ]
+     ]
+     if :prime = 1 
+     [
+     show :a 
+	  ifelse  :mm < :frames/2 [
+         setitem 1 :MyColor modulo  :mm+:a*2 256
+      ]	  [		setitem 1 :MyColor modulo  (:frames-:mm)+:a*2 256
+      ]
+      
+      setitem 2 :MyColor modulo  :a*4 256
+      setitem 3 :MyColor modulo  :a*5 256
+      make "NewScale DrawTriangle :a :CurrScale :MyColor
+      make "CurrScale :NewScale
+     ]
+   ]
+   rt 360/:frames
+
+   
+   GIFSAVE WORD :mm ".gif
+]
